@@ -135,9 +135,13 @@ void oled_task(void *p) {
         if (xSemaphoreTake(xSemaphoreTrigger, pdMS_TO_TICKS(100)) == pdTRUE) {
             gfx_clear_buffer(&disp);
             if (xQueueReceive(xQueueDistance, &distance, pdMS_TO_TICKS(100)) == pdTRUE) {
-                snprintf(distanceStr, sizeof(distanceStr), "Dist: %.2f cm", distance);
-                gfx_draw_string(&disp, 0, 0, 1, distanceStr);
-                draw_distance_bar(&disp, distance);
+                if (distance > 400){
+                    gfx_draw_string(&disp, 0, 0, 1, "Falha no sensor");
+                }else{
+                    snprintf(distanceStr, sizeof(distanceStr), "Dist: %.2f cm", distance);
+                    gfx_draw_string(&disp, 0, 0, 1, distanceStr);
+                    draw_distance_bar(&disp, distance);
+                }
             } else {
                 gfx_draw_string(&disp, 0, 0, 1, "Falha no sensor");
             }
